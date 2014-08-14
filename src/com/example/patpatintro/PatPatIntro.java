@@ -4,12 +4,19 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,17 +32,35 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 	private boolean isProfShowed = false;
 	private int popupNoCnt = 0;
 	private int progress = 0;
+	
+	private LinearLayout linear;
+	private Bitmap egg;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.intro);
 
+		// set up bottom layout
+		Window win = getWindow();
+		win.setContentView(R.layout.intro);
+
+		// set up top layout
+		LayoutInflater inflater = (LayoutInflater)getSystemService(
+				Context.LAYOUT_INFLATER_SERVICE);
+		linear = (LinearLayout)inflater.inflate(R.layout.intro_black, null);
+
+		LinearLayout.LayoutParams paramlinear = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.FILL_PARENT,
+				LinearLayout.LayoutParams.FILL_PARENT);
+		win.addContentView(linear, paramlinear);
+
+		// prepare variables
 		context = this;
 		textV = (TextView)findViewById(R.id.text);
 		prof =  (ImageView)findViewById(R.id.imageView1);
 		ll = (LinearLayout)findViewById(R.id.rootLayout);
+		final Animation fadeOut = AnimationUtils.loadAnimation(PatPatIntro.this, R.anim.fade_out);
 
 		// activity 전체에 listener 처리
 		ll.setOnClickListener(new OnClickListener() {
@@ -46,7 +71,7 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 
 				switch(progress) {
 				case 1:
-					textV.setText(".....용사어.....");
+					textV.setText(".....용사여.....");
 					break;
 
 				case 2:
@@ -68,6 +93,8 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 				case 6:
 					textV.setTextColor(Color.parseColor("#000000"));
 					textV.setText("!!!!!!");
+					
+					linear.startAnimation(fadeOut);
 
 					/*
 					try {
@@ -80,13 +107,11 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					 */
 
 					// 클릭 안하고 자동으로 넘어가게 할때 손보면 어덯게든 될까?
 					try {
 						ll.setBackgroundColor(Color.rgb(50, 50, 50));
 						Thread.sleep(100);
-						/*
 						ll.setBackgroundColor(Color.rgb(100, 100, 100));
 						Thread.sleep(100);
 						ll.setBackgroundColor(Color.rgb(150, 150, 150));
@@ -94,11 +119,11 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 						ll.setBackgroundColor(Color.rgb(200, 200, 200));
 						Thread.sleep(100);
 						ll.setBackgroundColor(Color.rgb(255, 255, 255));
-						*/
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					*/
 					break;
 
 				case 7:
@@ -110,6 +135,9 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 					break;
 
 				case 9:
+					egg = BitmapFactory.decodeResource(context.getResources(), R.drawable.egg);
+					Bitmap bit = Bitmap.createBitmap(egg.getWidth(), egg.getHeight(), Config.ARGB_8888);
+							
 					textV.setText("이 이상한 알을\r\n발견한 사람이지");
 					break;
 
@@ -140,7 +168,7 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 
 					break;
 
-					// Select Yes
+				// Select Yes
 				case 21:
 					textV.setText("오오! 고맙네.\r\n자네라면 맡아줄 줄 알았지.");
 					break;
@@ -167,7 +195,7 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 					progress = 14;
 					break;
 
-					// Select No 10 times
+				// Select No 5 times
 				case 41:
 					textV.setText("그래... 그런가...");
 					break;
@@ -179,6 +207,9 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 				case 43:
 					textV.setText("");
 					break;
+					
+				case 44:
+					System.exit(1);
 				}
 			}
 		});
@@ -190,6 +221,7 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 
 	}
 
+	// popup	
 	DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
@@ -203,7 +235,7 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 				//No button clicked
 				popupNoCnt++;
 
-				if(popupNoCnt >= 10)
+				if(popupNoCnt >= 5)
 					progress = 40;
 				else
 					progress = 30;
