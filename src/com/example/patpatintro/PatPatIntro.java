@@ -7,7 +7,9 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,13 +30,13 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 	private TextView textV;
 	private ImageView prof;
 	private LinearLayout ll;
+	private IntroDrawer drawer;
 
 	private boolean isProfShowed = false;
 	private int popupNoCnt = 0;
 	private int progress = 0;
-	
+
 	private LinearLayout linear;
-	private Bitmap egg;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -46,8 +48,7 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 		win.setContentView(R.layout.intro);
 
 		// set up top layout
-		LayoutInflater inflater = (LayoutInflater)getSystemService(
-				Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		linear = (LinearLayout)inflater.inflate(R.layout.intro_black, null);
 
 		LinearLayout.LayoutParams paramlinear = new LinearLayout.LayoutParams(
@@ -91,39 +92,8 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 					break;
 
 				case 6:
-					textV.setTextColor(Color.parseColor("#000000"));
 					textV.setText("!!!!!!");
-					
 					linear.startAnimation(fadeOut);
-
-					/*
-					try {
-						for(int tmp=0; tmp<=255; tmp++) {
-							//ll.setBackgroundColor(Color.rgb(tmp, tmp, tmp));
-//							Log.v("TAG","aa");
-							//Thread.sleep(25);
-						}
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-					// 클릭 안하고 자동으로 넘어가게 할때 손보면 어덯게든 될까?
-					try {
-						ll.setBackgroundColor(Color.rgb(50, 50, 50));
-						Thread.sleep(100);
-						ll.setBackgroundColor(Color.rgb(100, 100, 100));
-						Thread.sleep(100);
-						ll.setBackgroundColor(Color.rgb(150, 150, 150));
-						Thread.sleep(100);
-						ll.setBackgroundColor(Color.rgb(200, 200, 200));
-						Thread.sleep(100);
-						ll.setBackgroundColor(Color.rgb(255, 255, 255));
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					*/
 					break;
 
 				case 7:
@@ -135,9 +105,9 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 					break;
 
 				case 9:
-					egg = BitmapFactory.decodeResource(context.getResources(), R.drawable.egg);
-					Bitmap bit = Bitmap.createBitmap(egg.getWidth(), egg.getHeight(), Config.ARGB_8888);
-							
+					drawer = new IntroDrawer(context, BitmapFactory.decodeResource(getResources(), R.drawable.egg));
+					setContentView(drawer);
+					
 					textV.setText("이 이상한 알을\r\n발견한 사람이지");
 					break;
 
@@ -168,7 +138,7 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 
 					break;
 
-				// Select Yes
+					// Select Yes
 				case 21:
 					textV.setText("오오! 고맙네.\r\n자네라면 맡아줄 줄 알았지.");
 					break;
@@ -195,7 +165,7 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 					progress = 14;
 					break;
 
-				// Select No 5 times
+					// Select No 5 times
 				case 41:
 					textV.setText("그래... 그런가...");
 					break;
@@ -207,7 +177,7 @@ public class PatPatIntro extends Activity implements View.OnClickListener {
 				case 43:
 					textV.setText("");
 					break;
-					
+
 				case 44:
 					System.exit(1);
 				}
